@@ -5,6 +5,9 @@ import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 dotenv.config();
+//this is the middleware to have the body parser (so that you can test with Postman)
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //connect to mongodb
 connectdb();
