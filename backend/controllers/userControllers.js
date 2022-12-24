@@ -1,4 +1,7 @@
 import User from "../models/userModel.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+
 /**Read */
 /**
  * @description Get all the users
@@ -54,13 +57,15 @@ export const signup = async (req, res, next) => {
     //422 is data cannnot be processed
     return res.status(422).json({ message: "Invalid Data" });
   }
-
+  //hash the password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
   //create a new instance of the user
   let user;
   try {
     //user equal to the new user document
     //providing the attributes
-    user = new User({ email, name, password });
+    user = new User({ email, name, password: hashedPassword });
     //now we have the user object, we need to save it into mongoDB!!!!! IMPT
     //save returns a promise, so we need to await.
     await user.save();
@@ -77,4 +82,41 @@ export const signup = async (req, res, next) => {
   }
 
   return res.status(201).json({ user });
+};
+/**
+ *
+ * @description Login a user
+ * @route       Post /user/login/
+ * @access      Public
+ */
+export const login = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  //check for the validation
+  if (!email && email.trim() === "" && !password && password.length < 6) {
+    //422 is data cannnot be processed
+    return res.status(422).json({ message: "Invalid Data" });
+  }
+  let existingUser;
+  try {
+    //this will just find one user with that specific email from the user
+    existingUser = await User.findOne({ email });
+  } catch (error) {
+    return console.log(error);
+  }
+
+  if (!existingUser) {
+    return res.status(404).json({ message: "No user found" });
+  }
+  const isPasswordCorrect = await bcrypt.compare(
+    password,
+    existingUser.password
+  );
+
+  if (!isPasswordCorrect) {
+    return res.status(400).json({ message: "Incorrect Password" });
+  }
+  return res
+    .status(200)
+    .json({ id: existingUser._id, message: "Login Successful" });
 };
