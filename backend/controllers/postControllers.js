@@ -186,7 +186,15 @@ export const deletePost = async (req, res) => {
   const id = req.params.id; //note that params.id is from the url
   let post;
   try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    //get the user details
+    //populate a recall
+    post = await Post.findById(id).populate("user"); // thiswill give u an object of the user
+    post.user.posts.pull(post); //pull means deleting that recall from the array
+    await post.user.save({ session }); //after we pull we need to save that user in the SAME SESSION
     post = await Post.findByIdAndRemove(id);
+    session.commitTransaction();
   } catch (error) {
     return console.log(error);
   }
