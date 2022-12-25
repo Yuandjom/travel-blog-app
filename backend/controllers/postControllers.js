@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import Post from "../models/postModel.js";
+import User from "../models/userModel.js";
 /**
  * @description
  * @route
@@ -44,7 +46,8 @@ export const addPost = async (req, res) => {
 
   //check validation
   if (
-    (!title && title.trim()) === "" &&
+    !title &&
+    title.trim() === "" &&
     !description &&
     description.trim() === "" &&
     !location &&
@@ -57,7 +60,20 @@ export const addPost = async (req, res) => {
     //this is unprocessable entity
     return res.status(422).json({ message: "Invalid Entity" });
   }
+  //extract the user
+  let existingUser;
+  try {
+    existingUser = await User.findById(user); //remember to import the model on the top
+  } catch (error) {
+    return console.log(error);
+  }
+  //validation
+  if (!existingUser) {
+    return res.status(404).json({ message: "User is not found" });
+  }
+
   let post;
+  //before we are saving the post, we need to store the post in the user's post array in userModel
   try {
     //CREATE an instance of the post model
     post = new Post({
@@ -68,9 +84,16 @@ export const addPost = async (req, res) => {
       date: new Date(`${date}`),
       user,
     });
+    //create a session to store
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    //use the reference
+    //push will add an item into the user's post array (look at userModel.js)
+    existingUser.posts.push(post);
+    existingUser.save({ session }); //ES6 dont need session: session
     //after creating the instance, we need to save it to mongoDb
-    post = await post.save();
-
+    post = await post.save({ session });
+    session.commitTransaction();
     //check for validation
     if (!post) {
       return res.status(500).json({
@@ -120,7 +143,8 @@ export const updatePost = async (req, res) => {
   const id = req.params.id; //get it from the route /posts/:id
   //check validation
   if (
-    (!title && title.trim()) === "" &&
+    !title &&
+    title.trim() === "" &&
     !description &&
     description.trim() === "" &&
     !location &&
