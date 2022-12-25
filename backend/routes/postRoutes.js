@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addPost,
+  deletePost,
   getAllPosts,
   getPostById,
   updatePost,
@@ -19,4 +20,6 @@ router.post("/", addPost);
 //put request is used to update something from the request
 router.put("/:id", updatePost);
 
+//Delete
+router.delete("/:id", deletePost);
 export default router; //after this need to bring it to server.js and use the app.use

@@ -151,3 +151,23 @@ export const updatePost = async (req, res) => {
   //if everything is okay
   return res.status(200).json({ message: "Updated Successfully" });
 };
+
+/**
+ * @description Delete a post
+ * @route       DELETE /posts/:id
+ * @access      Public
+ */
+export const deletePost = async (req, res) => {
+  //first we have to get the id from the url
+  const id = req.params.id; //note that params.id is from the url
+  let post;
+  try {
+    post = await Post.findByIdAndRemove(id);
+  } catch (error) {
+    return console.log(error);
+  }
+  if (!post) {
+    return res.status(500).json({ message: "Unable to delete" });
+  }
+  return res.status(200).json({ message: "Deleted Successfully" });
+};
