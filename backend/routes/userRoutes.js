@@ -9,6 +9,7 @@ const router = express.Router();
 router.get("/", getAllUsers); //note that u need ur controller function here
 //sign up request
 router.post("/signup", signup);
+
 router.post("/login", login);
 
 //make sure to export it

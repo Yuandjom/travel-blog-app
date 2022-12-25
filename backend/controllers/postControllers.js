@@ -1,4 +1,9 @@
 import Post from "../models/postModel.js";
+/**
+ * @description
+ * @route
+ * @access
+ */
 
 /**
  * @description Get all the users post
@@ -81,7 +86,7 @@ export const addPost = async (req, res) => {
 
 /**
  * @description Get a post by its ID
- * @route       /posts/:id
+ * @route       GET /posts/:id
  * @access      Public
  */
 export const getPostById = async (req, res) => {
@@ -102,7 +107,47 @@ export const getPostById = async (req, res) => {
 };
 
 /**
- * @description
- * @route
- * @access
+ * @description Update a post
+ * @route       PUT /posts/:id
+ * @access      Public
  */
+
+export const updatePost = async (req, res) => {
+  //get data from the frontend
+  //we need to get something from the req.body
+  //refer to the postModel for what to destructure and what to get
+  const { title, description, location, date, image } = req.body;
+  const id = req.params.id; //get it from the route /posts/:id
+  //check validation
+  if (
+    (!title && title.trim()) === "" &&
+    !description &&
+    description.trim() === "" &&
+    !location &&
+    location.trim() === "" &&
+    !date &&
+    !image &&
+    image.trim() === ""
+  ) {
+    //this is unprocessable entity
+    return res.status(422).json({ message: "Invalid Entity" });
+  }
+  let post;
+  try {
+    //this is so that we can find by that ID and update it
+    post = await Post.findByIdAndUpdate(id, {
+      title,
+      description,
+      image,
+      date: new Date(`${date}`),
+      location,
+    });
+  } catch (error) {
+    return console.log(error);
+  }
+  if (!post) {
+    return res.status(500).json({ message: "unable to update user" });
+  }
+  //if everything is okay
+  return res.status(200).json({ message: "Updated Successfully" });
+};
