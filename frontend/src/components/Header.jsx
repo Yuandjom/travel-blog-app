@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 /**
  * Toolbar gives a structure to how the AppBar looks like 
  * sx provides custom styling/color
- * 
  */
 function Header() {
     const linksArr = ["home", "diaries", "auth"]
