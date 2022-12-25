@@ -25,7 +25,10 @@ const postSchema = new mongoose.Schema({
   },
   //need to relate to the user
   user: {
-    type: String,
+    //this is to set up the relationship between the post and the user
+    //Every post only has a single user
+    type: mongoose.Types.ObjectId,
+    ref: "User",
     required: true,
   },
 });
