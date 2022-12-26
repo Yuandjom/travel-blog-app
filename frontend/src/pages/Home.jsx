@@ -1,5 +1,4 @@
 import React from 'react'
-import Header from '../components/Header'
 import { Box, Button, Typography } from '@mui/material' 
 import { Link } from 'react-router-dom'
 
@@ -38,7 +37,7 @@ const Home = () => {
         display={'flex'} 
         flexDirection="column"
       >
-        <Typography fontfamily={'Quicksand'} textAlign={'center'} variant="h4" padding={4}>
+        <Typography fontFamily={'Quicksand'} textAlign={'center'} variant="h4" padding={4}>
           SHARE YOUR TRAVEL DIARIES WITH US
         </Typography>
         <Box margin="auto">

@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -17,7 +17,11 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
  * <Card sx={{ width: "50%" }}>
  */
 
-function DiaryItem() {
+/**
+ * Instead of running all the static data, we need to pass in props into the DiaryItem
+ * 
+ */
+function DiaryItem({title, description, image, location, date, id}) {
   return (
     <Card sx={{ 
         width: "50%", 
@@ -39,18 +43,19 @@ function DiaryItem() {
           {<EditLocationAltIcon />}
         </IconButton>
       }
-      title="Shrimp and Chorizo Paella"
-      subheader="September 14, 2016"
+      title={location}
+      header = {location}
+      subheader={date }
     />
     {/**Bascially, if we are note passing in a static image, we need to change image="" to src="" */}
     <img
       height="194"
-      src="https://w0.peakpx.com/wallpaper/308/219/HD-wallpaper-nice-view-beauty-lake.jpg"
-      alt="Nice View"
+      src={image}
+      alt={title}
     />
     <CardContent>
       <Typography paddingBottom={1} variant="h6" color="text.secondary">
-        This impressive paella 
+        {title}
       </Typography>
       <hr />
       <Box paddingTop={1} display="flex">
@@ -58,9 +63,7 @@ function DiaryItem() {
             John Lim:
         </Typography>
         <Typography variant="body2" color="text.secondary">
-            This impressive paella is a perfect party dish and a fun meal to cook
-            together with your guests. Add 1 cup of frozen peas along with the mussels,
-            if you like.
+            {description}
         </Typography>
       </Box>
     </CardContent>

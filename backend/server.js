@@ -3,10 +3,12 @@ import dotenv from "dotenv";
 import connectdb from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import cors from "cors";
 
 const app = express();
 dotenv.config();
 //this is the middleware to have the body parser (so that you can test with Postman)
+app.use(cors()); //this will allow any access from any server to the backend server
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
