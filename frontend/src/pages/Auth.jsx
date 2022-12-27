@@ -2,7 +2,13 @@ import React from 'react'
 import {Box, FormLabel, TextField, Typography, Button} from "@mui/material"
 import { useState } from 'react'
 import { sendAuthRequest } from '../features/posts/postService'
+import {useDispatch} from 'react-redux'
+import {authActions} from "../features/auth/authSlice"
+
 function Auth() {
+  //dispatch the function from redux
+  //useDispatch will allow us to dispatch an action
+  const dispatch = useDispatch() //import the authActions so that we can dispatch it
   
   const [isSignup, setisSignup] = useState(false)
   //note that the values of the inputs are in the values of the form 
@@ -23,12 +29,21 @@ function Auth() {
     //need this to prevent the html page from switching to the default state
     e.preventDefault()
     console.log(inputs)
+
     if(isSignup){
       //we are sending the inputs object into the data(parameters of sendAuthRequest in postService)
-      sendAuthRequest(true, inputs).then((data) => console.log(data)).catch(err=> console.log(err))
+      sendAuthRequest(true, inputs)
+      //use the localstorage in the memory to store and keep track of the ID  
+       .then((data) => localStorage.setItem("userId", data.user._id))
+        .then(() => {dispatch(authActions.login())}) //we can just call the function to login the user
+        .catch(err=> console.log(err))
     }
     else{
-      sendAuthRequest(false, inputs).then((data) => console.log(data)).catch(err=>console.log(err))
+      sendAuthRequest(false, inputs)
+        //use the localstorage in the memory to store and keep track of the ID
+        .then((data) => localStorage.setItem("userId", data.id)) 
+        .then(() => {dispatch(authActions.login())})
+        .catch(err=>console.log(err))
     }
   }
   
@@ -84,7 +99,7 @@ function Auth() {
           <Button sx={{mt: 2, borderRadius: 10}} type="submit" variant="contained">
             {isSignup ? "Signup": "Login"}
           </Button>
-          <Button onClick={() => setisSignup(!isSignup)} sx={{mt: 2, borderRadius: 10}}type="submit" variant="outlined">
+          <Button onClick={() => setisSignup(!isSignup)} sx={{mt: 2, borderRadius: 10}} variant="outlined">
             {isSignup? "Change to Login": "Change to Signup"}
           </Button>
         </Box>

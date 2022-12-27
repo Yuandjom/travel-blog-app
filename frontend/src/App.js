@@ -3,7 +3,11 @@ import Dairies from "./pages/Dairies";
 import Auth from "./pages/Auth";
 import Header from "./components/Header"; //note that the header componenet is standalone
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import { useSelector } from "react-redux";
 function App() {
+  //grab the state from the redux
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  console.log(isLoggedIn);
   return (
     <>
       <Router>
