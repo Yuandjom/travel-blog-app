@@ -139,7 +139,7 @@ export const updatePost = async (req, res) => {
   //get data from the frontend
   //we need to get something from the req.body
   //refer to the postModel for what to destructure and what to get
-  const { title, description, location, date, image } = req.body;
+  const { title, description, location, image } = req.body;
   const id = req.params.id; //get it from the route /posts/:id
   //check validation
   if (
@@ -149,7 +149,6 @@ export const updatePost = async (req, res) => {
     description.trim() === "" &&
     !location &&
     location.trim() === "" &&
-    !date &&
     !image &&
     image.trim() === ""
   ) {
@@ -163,7 +162,6 @@ export const updatePost = async (req, res) => {
       title,
       description,
       image,
-      date: new Date(`${date}`),
       location,
     });
   } catch (error) {

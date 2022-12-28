@@ -6,6 +6,7 @@ import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Profile from "./pages/Profile";
 import Add from "./pages/Add";
+import UpdateDiary from "./pages/UpdateDiary";
 function App() {
   //grab the state from the redux
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
@@ -25,6 +26,7 @@ function App() {
               <Route path="/auth" element={<Auth />}></Route>
               <Route path="/add" element={<Add />}></Route>
               <Route path="/profile" element={<Profile />}></Route>
+              <Route path="/post/:id" element={<UpdateDiary />}></Route>
             </Routes>
           </section>
         </div>

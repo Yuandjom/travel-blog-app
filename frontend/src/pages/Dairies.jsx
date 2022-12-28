@@ -40,6 +40,7 @@ function Dairies() {
             location = {item.location}
             title = {item.title}
             key={index} 
+            user = {item.user}
           /> 
         ))}
     </Box>

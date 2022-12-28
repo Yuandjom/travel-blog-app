@@ -63,3 +63,48 @@ export const addPost = async (data) => {
   const resData = await res.data;
   return resData;
 };
+
+/**
+ * Get that specific post detail
+ *
+ */
+export const getPostDetails = async (id) => {
+  const res = await axios.get(`/posts/${id}`).catch((err) => console.log(err));
+  if (res.status !== 200) {
+    return console.log("Unable to fetch diary");
+  }
+  //if everything works fine, we will receive the data from the response
+  const resData = await res.data;
+  return resData;
+};
+
+export const postUpdate = async (data, id) => {
+  const res = await axios
+    .put(`/posts/${id}`, {
+      title: data.title,
+      description: data.description,
+      location: data.location,
+      image: data.imageURL,
+    })
+    .catch((err) => console.log(err));
+  if (res.status !== 200) {
+    return console.log("Unable to update");
+  }
+
+  const resData = await res.data;
+  return resData;
+};
+
+export const postDelete = async (id) => {
+  const res = await axios
+    .delete(`/posts/${id}`)
+    .catch((err) => console.log(err));
+
+  //check for validation
+  if (res.status !== 200) {
+    return console.log("Unable to delete");
+  }
+
+  const resData = await res.data;
+  return resData;
+};

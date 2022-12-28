@@ -7,10 +7,13 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-import { Box } from '@mui/material';
+import { Alert, Box, Snackbar } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import {Link} from 'react-router-dom'
+import { useState } from 'react';
+import { postDelete } from '../features/posts/postService';
 /**
  * 
  * Change the sx to be a percentage for dynamic effect 
@@ -21,7 +24,20 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
  * Instead of running all the static data, we need to pass in props into the DiaryItem
  * 
  */
-function DiaryItem({title, description, image, location, date, id}) {
+function DiaryItem({title, description, image, location, date, id, user}) {
+  const [open, setOpen] = useState(false)
+  //check if the userId is the current user logged in 
+  const isLoggedInUser = () => {
+    if(localStorage.getItem("userId" === user)){
+      return true
+    }
+    return false
+  }
+  //handle delete to delete the post
+  const handleDelete = () => {
+    postDelete(id).then(data=>console.log(data)).catch(err=> console.log(err))
+  }
+ 
   return (
     <Card sx={{ 
         width: "50%", 
@@ -67,14 +83,19 @@ function DiaryItem({title, description, image, location, date, id}) {
         </Typography>
       </Box>
     </CardContent>
-    <CardActions sx={{marginLeft: 'auto'}}>
-        <IconButton color='warning'>
+    { isLoggedInUser && <CardActions sx={{marginLeft: 'auto'}}>
+        <IconButton LinkComponent={Link} to={`/post/${id}`} color='warning'>
             <ModeEditOutlineIcon />
         </IconButton>
-        <IconButton color='error'>
+        <IconButton onClick={handleDelete} color='error'>
             <DeleteForeverIcon />
         </IconButton>
-    </CardActions>
+    </CardActions>}
+    <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
+      <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%' }}>
+        This is a success message!
+      </Alert>
+    </Snackbar>
   </Card>
   )
 }
