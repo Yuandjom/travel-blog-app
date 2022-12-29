@@ -30,6 +30,31 @@ export const getAllUsers = async (req, res) => {
   return res.status(200).json({ users });
 };
 
+/**
+ * @description Get user by id
+ * @route       GET /user/:id
+ * @access      Public
+ */
+export const getUserByid = async (req, res) => {
+  //from the frontend url
+  const id = req.params.id;
+  let user;
+  try {
+    //show all the post of the user
+    //fetch the user details from the id, populate and input the key in the parameter
+    user = await User.findById(id).populate("posts");
+  } catch (error) {
+    return console.log(error);
+  }
+  //run the validation
+  if (!user) {
+    return res.status(404).json({ message: "No user found" });
+  }
+
+  //if everything is fine,
+  return res.status(200).json({ user });
+};
+
 /**Create */
 /**
  * @description Sign up a user

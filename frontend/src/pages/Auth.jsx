@@ -4,12 +4,13 @@ import { useState } from 'react'
 import { sendAuthRequest } from '../features/posts/postService'
 import {useDispatch} from 'react-redux'
 import {authActions} from "../features/auth/authSlice"
+import { useNavigate } from 'react-router-dom'
 
 function Auth() {
   //dispatch the function from redux
   //useDispatch will allow us to dispatch an action
   const dispatch = useDispatch() //import the authActions so that we can dispatch it
-  
+  const navigate = useNavigate()
   const [isSignup, setisSignup] = useState(false)
   //note that the values of the inputs are in the values of the form 
   const [inputs, setInputs] = useState({
@@ -17,6 +18,18 @@ function Auth() {
     email:"", 
     password:""
   })
+
+  const onResReceived = (data) => {
+    //
+    if(isSignup){
+      localStorage.setItem("userId", data.user._id)
+    } else{
+      localStorage.setItem("userId", data.id)
+    }
+
+    dispatch(authActions.login())
+    navigate('/')
+  }
   
   const handleChange = (e) => {
     //we need to save the prev state also
@@ -34,15 +47,13 @@ function Auth() {
       //we are sending the inputs object into the data(parameters of sendAuthRequest in postService)
       sendAuthRequest(true, inputs)
       //use the localstorage in the memory to store and keep track of the ID  
-       .then((data) => localStorage.setItem("userId", data.user._id))
-        .then(() => {dispatch(authActions.login())}) //we can just call the function to login the user
+       .then(onResReceived)
         .catch(err=> console.log(err))
     }
     else{
       sendAuthRequest(false, inputs)
         //use the localstorage in the memory to store and keep track of the ID
-        .then((data) => localStorage.setItem("userId", data.id)) 
-        .then(() => {dispatch(authActions.login())})
+        .then(onResReceived)
         .catch(err=>console.log(err))
     }
   }
